@@ -16,6 +16,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Beaver - Party Availability Poll",
   description: "Create polls to find the best date for your party",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
