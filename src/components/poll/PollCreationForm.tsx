@@ -189,7 +189,13 @@ export function PollCreationForm({ locale }: PollCreationFormProps) {
           creatorEmail: creatorEmail.trim(),
           creatorPin: creatorPin,
           verifiedToken: token,
-          questions: questions.filter(q => q.question.trim() !== ''),
+          questions: questions.filter(q => q.question.trim() !== '').map(q => ({
+            type: q.type,
+            question: q.question,
+            required: q.required,
+            multiSelect: q.multiSelect,
+            options: q.options?.map(o => typeof o === 'string' ? o : o.label),
+          })),
         }),
       });
 
