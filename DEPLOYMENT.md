@@ -77,9 +77,9 @@ Create a `.env.local` file in the project root:
 # REQUIRED FOR PRODUCTION
 # ===================
 
-# Email Service (Resend)
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-RESEND_FROM_EMAIL=noreply@yourdomain.com
+# Gmail SMTP (for verification emails)
+GMAIL_USER=you@gmail.com
+GMAIL_APP_PASSWORD=abcdefghijklmnop
 
 # Security Secret (generate a random 32+ character string)
 NEXTAUTH_SECRET=your-super-secret-key-minimum-32-characters
@@ -98,13 +98,13 @@ NEXT_PUBLIC_BASE_URL=https://yourdomain.com
 # VERCEL_URL=your-app.vercel.app
 ```
 
-### Getting a Resend API Key
+### Setting Up Gmail App Password
 
-1. Go to [resend.com](https://resend.com)
-2. Create an account
-3. Add and verify your domain (or use their test domain for development)
-4. Generate an API key
-5. Add it to your environment variables
+1. Use any Gmail account (e.g. `you@gmail.com`)
+2. Enable 2-Step Verification at [myaccount.google.com/signinoptions/two-step-verification](https://myaccount.google.com/signinoptions/two-step-verification)
+3. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+4. Create an app password (select "Mail" as the app)
+5. Copy the 16-character password (no spaces) into `GMAIL_APP_PASSWORD`
 
 ### Generating NEXTAUTH_SECRET
 
@@ -163,8 +163,8 @@ Vercel provides the easiest deployment for Next.js apps.
 2. Go to [vercel.com](https://vercel.com) and import your repository
 
 3. Configure environment variables in Vercel dashboard:
-   - `RESEND_API_KEY`
-   - `RESEND_FROM_EMAIL`
+   - `GMAIL_USER`
+   - `GMAIL_APP_PASSWORD`
    - `NEXTAUTH_SECRET`
 
 4. Deploy
@@ -253,8 +253,8 @@ Build and run:
 ```bash
 docker build -t beaver .
 docker run -p 3000:3000 \
-  -e RESEND_API_KEY=your_key \
-  -e RESEND_FROM_EMAIL=noreply@domain.com \
+  -e GMAIL_USER=you@gmail.com \
+  -e GMAIL_APP_PASSWORD=your_app_password \
   -e NEXTAUTH_SECRET=your_secret \
   -v ./data:/app/data \
   beaver
@@ -269,7 +269,7 @@ docker run -p 3000:3000 \
 - [ ] **Environment Variables**: All required variables are set
 - [ ] **HTTPS**: SSL certificate is configured (required for crypto APIs)
 - [ ] **Email**: Test that verification emails are being sent
-- [ ] **Domain**: `RESEND_FROM_EMAIL` uses a verified domain
+- [ ] **Gmail**: `GMAIL_USER` and `GMAIL_APP_PASSWORD` are set correctly
 - [ ] **Secret**: `NEXTAUTH_SECRET` is a strong, unique value
 - [ ] **Database**: Initial schema is created (`npm run db:push`)
 
@@ -297,10 +297,10 @@ docker run -p 3000:3000 \
 
 #### "Email verification not working"
 
-1. Check `RESEND_API_KEY` is valid
-2. Check `RESEND_FROM_EMAIL` uses a verified domain
-3. In development, check console for verification code
-4. Check Resend dashboard for email logs
+1. Check `GMAIL_USER` is a valid Gmail address
+2. Check `GMAIL_APP_PASSWORD` is a valid 16-character app password (not your Gmail login password)
+3. Ensure 2-Step Verification is enabled on the Gmail account
+4. In development, check console for verification code
 
 #### "Crypto API errors"
 

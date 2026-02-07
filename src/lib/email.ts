@@ -1,7 +1,14 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@example.com';
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 // Generate a 6-digit verification code
 export function generateVerificationCode(): string {
@@ -11,7 +18,7 @@ export function generateVerificationCode(): string {
   return code;
 }
 
-// Send verification email via Resend
+// Send verification email via Nodemailer + Gmail
 export async function sendVerificationEmail(
   email: string,
   code: string,
@@ -49,22 +56,18 @@ export async function sendVerificationEmail(
   `;
 
   try {
-    const { error } = await resend.emails.send({
-      from: fromEmail,
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
       to: email,
       subject,
       html,
     });
 
-    if (error) {
-      console.error('Resend error:', error);
-      return { success: false, error: error.message };
-    }
-
     return { success: true };
   } catch (err) {
     console.error('Failed to send verification email:', err);
-    return { success: false, error: 'Failed to send email' };
+    const message = err instanceof Error ? err.message : 'Failed to send email';
+    return { success: false, error: message };
   }
 }
 
